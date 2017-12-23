@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1513473079 source:c:\users\francisco\desktop\arbol_b\arbol_bp\main.cpp
+	<iostream>
+	"nodo.h"
+
+1513562518 c:\users\francisco\desktop\arbol_b\arbol_bp\nodo.h
+	"valor.h"
+
+1513562580 c:\users\francisco\desktop\arbol_b\arbol_bp\valor.h
+	"nodo.h"
+
+1513406816 source:c:\users\francisco\desktop\arbol_b\arbol_bp\nodo.cpp
+	"nodo.h"
+	<iostream>
+
+1513379679 source:c:\users\francisco\desktop\arbol_b\arbol_bp\valor.cpp
+	"valor.h"
+	<iostream>
+
