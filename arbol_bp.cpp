@@ -53,6 +53,7 @@ Nodo * Arbol_BP::buscar_hoja(int a){
     return p;
 }
 
+/// EL ARBOL VE SI EL NODO ES UNA HOJA
 bool Arbol_BP::es_hoja(Nodo * p){
     if(p->nodo_es_hoja())
         return true;
@@ -60,6 +61,7 @@ bool Arbol_BP::es_hoja(Nodo * p){
         return false;
 }
 
+/// SE PINTA LA LISTA ENLAZADA AL FINAL DEL ARBOL DESDE LA PRIMERA HOJA
 void Arbol_BP::pintar(){
     /// PONER ESTE VALOR COMO CONSTANTE
     int valor_minimo = numeric_limits<int>::min();

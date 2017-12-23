@@ -12,7 +12,12 @@ int main()
     A.agregar(3);
     A.agregar(2);
     A.agregar(1);
+    A.agregar(5);
+    A.pintar();
 
+    A.sacar(4);
+    A.sacar(5);
+    A.pintar();
     /**A.agregar(1);
     A.agregar(1);
     A.agregar(1);
@@ -28,7 +33,6 @@ int main()
     A.agregar(5);
     A.agregar(5);
     A.agregar(5);**/
-    A.pintar();
-    cout << "Hello world!" << endl;
+    ///cout << "Hello world!" << endl;
     return 0;
 }

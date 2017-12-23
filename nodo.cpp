@@ -131,7 +131,9 @@ void Nodo::buscar(int a){
 
 void Nodo::agregar(int a){
     buscar(a);
-    Valor * q = (Valor *)malloc(sizeof(Valor));
+    ///Valor * q = (Valor *)malloc(sizeof(Valor));
+    Valor * q = new Valor;
+
     q->valor = a;
     q->nodo = NULL;
     if(donde == VACIO){
@@ -199,6 +201,83 @@ void Nodo::agregar(int a){
     }
 }
 
+/// HAY QUE MANTENER LA MITAD
+int Nodo::sacar(int a){
+    buscar(a);
+    Valor * p;
+    if(!encontrado){
+        return 0;
+    }else{
+        if(donde == PRINCIPIO){
+            p = principio;
+            principio = p->siguiente;
+
+            if(p->valor < mitad->valor){
+                menores--;
+            }else{
+                mayores--;
+            }
+
+            delete p;
+            if(mayores - menores > 1){
+                mitad = mitad->siguiente;
+                mayores--;
+                menores++;
+            }
+            if(menores - mayores > 1){
+                mitad = mitad->anterior;
+                menores--;
+                mayores++;
+            }
+        }else if(donde == FINAL){
+            p = anterior->siguiente;
+            anterior->siguiente = NULL;
+
+            if(p->valor < mitad->valor){
+                menores--;
+            }else{
+                mayores--;
+            }
+
+            delete p;
+            if(mayores - menores > 1){
+                mitad = mitad->siguiente;
+                mayores--;
+                menores++;
+            }
+            if(menores - mayores > 1){
+                mitad = mitad->anterior;
+                menores--;
+                mayores++;
+            }
+        }else{
+            p = anterior->siguiente;
+            anterior->siguiente = p->siguiente;
+            p->siguiente->anterior = anterior;
+
+            if(p->valor < mitad->valor){
+                menores--;
+            }else{
+                mayores--;
+            }
+
+            delete p;
+            if(mayores - menores > 1){
+                mitad = mitad->siguiente;
+                mayores--;
+                menores++;
+            }
+            if(menores - mayores > 1){
+                mitad = mitad->anterior;
+                menores--;
+                mayores++;
+            }
+        }
+    }
+    cuantos--;
+    return 1;
+}
+
 Valor * Nodo::obtener_principio(){
     return principio;
 }
@@ -220,10 +299,8 @@ bool Nodo::nodo_es_hoja(){
 
 void Nodo::pintar(){
     Valor * p = principio;
-    cout << "En la mitad: " << mitad->valor << endl;
-    cout << "Cuantos: " << cuantos << endl;
-    cout << "Mayores: " << mayores << endl;
-    cout << "Menores: " << menores << endl;
+    if(mitad)
+        cout << "Mitad: " << mitad->valor << endl << endl;
     while(p){
         cout << "Valor: " << p->valor << endl;
         p = p->siguiente;

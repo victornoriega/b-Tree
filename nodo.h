@@ -32,6 +32,8 @@ public:
     Nodo * obtener_auxiliar_derecho();
     bool nodo_es_hoja();
 
+    int sacar(int);
+
     void buscar(int);
     void agregar(int);
     int borrar(int);
