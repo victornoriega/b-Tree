@@ -17,3 +17,20 @@
 	"valor.h"
 	<iostream>
 
+1514011474 source:c:\users\francisco\desktop\arbol_b\b_tree\b-tree\main.cpp
+	<iostream>
+	"nodo.h"
+
+1514014828 c:\users\francisco\desktop\arbol_b\b_tree\b-tree\nodo.h
+	"valor.h"
+
+1514012513 c:\users\francisco\desktop\arbol_b\b_tree\b-tree\valor.h
+	"nodo.h"
+
+1514014692 source:c:\users\francisco\desktop\arbol_b\b_tree\b-tree\arbol_bp.cpp
+	"arbol_bp.h"
+	<iostream>
+
+1514013899 c:\users\francisco\desktop\arbol_b\b_tree\b-tree\arbol_bp.h
+	"nodo.h"
+

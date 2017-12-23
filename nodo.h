@@ -21,6 +21,17 @@ public:
     Nodo();
     Nodo(int);
     ~Nodo();
+    /// NO SE SI PONERLES MAS PARAMETROS COMO LOS PADRES O LAS HOJAS ANTERIORES O SIGUIENTES
+    /// CONSTRUCTOR EN CODIGO PARA LAS NUEVAS HOJAS
+    void nueva_hoja(int);
+    /// CONSTRUCTOR EN CODIGO PARA LOS NUEVOS NODOS INTERNOS
+    void nuevo_nodo_interno(int);
+
+    Valor * obtener_principio();
+    Nodo * obtener_auxiliar_izquierdo();
+    Nodo * obtener_auxiliar_derecho();
+    bool nodo_es_hoja();
+
     void buscar(int);
     void agregar(int);
     int borrar(int);

@@ -1,6 +1,6 @@
 #include "nodo.h"
 #include <iostream>
-
+#include <limits>
 using namespace std;
 
 enum{VACIO,PRINCIPIO,ENMEDIO,FINAL};
@@ -20,14 +20,14 @@ Nodo::Nodo(){
     es_hoja = false;
 }
 /// HACER EL CONSTRUCTOR EN CODIGO PARA EL ARBOL
-Nodo::Nodo(int o){
+Nodo::Nodo(int ord){
     principio = NULL;
     anterior = NULL;
     mitad = NULL;
     donde = VACIO;
     encontrado = false;
     cuantos = 0;
-    orden = o;
+    orden = ord;
     mayores = 0;
     menores = 0;
     padre = NULL;
@@ -58,6 +58,41 @@ Nodo::~Nodo(){
     es_hoja = false;
 }
 
+/// CONSTRUCTOR EN CODIGO PARA LAS NUEVAS HOJAS
+void Nodo::nueva_hoja(int ord){
+    principio = NULL;
+    anterior = NULL;
+    mitad = NULL;
+    donde = VACIO;
+    encontrado = false;
+    cuantos = 0;
+    orden = ord;
+    mayores = 0;
+    menores = 0;
+    padre = NULL;
+    auxiliar_izquierdo = NULL;
+    auxiliar_derecho = NULL;
+    es_hoja = true;
+}
+
+/// CONSTRUCTOR EN CODIGO PARA LOS VERTICES INTERNOS
+void Nodo::nuevo_nodo_interno(int ord){
+    principio = NULL;
+    anterior = NULL;
+    mitad = NULL;
+    donde = VACIO;
+    encontrado = false;
+    cuantos = 0;
+    orden = ord;
+    mayores = 0;
+    menores = 0;
+    padre = NULL;
+    auxiliar_izquierdo = NULL;
+    auxiliar_derecho = NULL;
+    es_hoja = false;
+}
+
+/// ESTO DEBERIA DAR LA HOJA DONDE SE INSERTARA EL VALOR
 void Nodo::buscar(int a){
     Valor * p = principio;
     if(!p){
@@ -98,7 +133,7 @@ void Nodo::agregar(int a){
     buscar(a);
     Valor * q = (Valor *)malloc(sizeof(Valor));
     q->valor = a;
-    q->nodo_derecho = NULL;
+    q->nodo = NULL;
     if(donde == VACIO){
         principio = q;
         mitad = q;
@@ -162,6 +197,25 @@ void Nodo::agregar(int a){
         mayores++;
         return;
     }
+}
+
+Valor * Nodo::obtener_principio(){
+    return principio;
+}
+
+Nodo * Nodo::obtener_auxiliar_izquierdo(){
+    return auxiliar_izquierdo;
+}
+
+Nodo * Nodo::obtener_auxiliar_derecho(){
+    return auxiliar_derecho;
+}
+
+bool Nodo::nodo_es_hoja(){
+    if(es_hoja)
+        return true;
+    else
+        return false;
 }
 
 void Nodo::pintar(){

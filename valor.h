@@ -9,8 +9,8 @@ struct Valor{
     Valor * siguiente;
     Valor * anterior;
 
-    /// Para la capa de llaves
-    Nodo * nodo_derecho;
+    /// PARA LA CAPA DE LLAVES
+    Nodo * nodo;
 };
 
 #endif // VALOR_H_INCLUDED
