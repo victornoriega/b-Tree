@@ -3,36 +3,15 @@
 
 using namespace std;
 
-int main()
-{
-    Nodo A = Nodo(5);
-    /**A.agregar(6);
-    A.agregar(5);**/
-    A.agregar(4);
-    A.agregar(3);
-    A.agregar(2);
-    A.agregar(1);
-    A.agregar(5);
-    A.pintar();
+int main(){
+    Nodo * A = new Nodo();
 
-    A.sacar(4);
-    A.sacar(5);
-    A.pintar();
-    /**A.agregar(1);
-    A.agregar(1);
-    A.agregar(1);
-    A.agregar(2);
-    A.agregar(2);
-    A.agregar(2);
-    A.agregar(3);
-    A.agregar(3);
-    A.agregar(3);
-    A.agregar(4);
-    A.agregar(4);
-    A.agregar(4);
-    A.agregar(5);
-    A.agregar(5);
-    A.agregar(5);**/
-    ///cout << "Hello world!" << endl;
+    A->agregar_en_hoja(5);
+    A->agregar_en_hoja(4);
+    A->agregar_en_hoja(3);
+    A->agregar_en_hoja(2);
+    A->agregar_en_hoja(1);
+
+    A->pintar_hoja();
     return 0;
 }
