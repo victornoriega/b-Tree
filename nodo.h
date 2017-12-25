@@ -35,12 +35,19 @@ public:
     /// FUNCIONES UTILES
     Valor * obtener_lugar_agregado();
     Valor * obtener_principio();
+    Valor * obtener_mitad();
+
     Nodo * obtener_auxiliar_izquierdo();
+    void establecer_auxiliar_izquierdo(Nodo *);
     Nodo * obtener_auxiliar_derecho();
+    void establecer_auxiliar_derecho(Nodo *);
+
+    Nodo * obtener_padre();
+    void establecer_padre(Nodo *);
+
     int obtener_cuantos();
     int obtener_orden();
-
-    ///void dividir_hoja(Nodo *, Nodo *);
+    bool nodo_es_hoja();
 
     void pintar_hoja();
     void pintar_nodo();

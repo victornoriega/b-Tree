@@ -84,6 +84,13 @@ void Nodo::terminar_hoja(){
     while(principio){
         p = principio;
         principio = principio->siguiente_en_hoja;
+
+        /// SACA LOS VALORES DE LOS NODOS INTERNOS REAJUSTANDO SUS SIGUIENTES Y ANTERIORES RESPECTO AL NODO
+        if(p->anterior_en_nodo)
+            p->anterior_en_nodo->siguiente_en_nodo = p->siguiente_en_nodo;
+        if(p->siguiente_en_nodo)
+            p->siguiente_en_nodo->anterior_en_nodo = p->anterior_en_nodo;
+
         delete p;
     }
     principio = NULL;
@@ -178,6 +185,10 @@ void Nodo::agregar_en_hoja(int a){
 
     q->valor = a;
     q->nodo = NULL;
+    q->siguiente_en_nodo = NULL;
+    q->anterior_en_nodo = NULL;
+    q->nodo_interno = NULL;
+
     if(donde == VACIO){
         principio = q;
         mitad = q;
@@ -402,33 +413,6 @@ void Nodo::pintar_nodo(){
     }
 }
 
-
-
-///     **************************************************************************************************
-///     DIVIDIR HOJA
-///     DADA UNA HOJA CON UNA CANTIDAD DE ELEMENTOS IGUAL AL ORDEN ESTA DEBE DIVIDIRSE
-///     PARAMETROS: Nodo * INDICA LA DIRECCION DE LA HOJA LLENA
-///                 Nodo * INDICA LA DIRECCION DE UNA HOJA VACIA QUE SE CONECTARA CON LA PRIMERA HOJA
-///     RETORNO: NADA
-///     **************************************************************************************************
-void Nodo::dividir_hoja(Nodo * p, Nodo * q){
-    Valor * x1 = p->mitad;
-    Valor * x2;
-    while(x1){
-        q->agregar_en_hoja(x1->valor);
-        x2 = x1;
-        x1 = x1->siguiente_en_hoja;
-        p->sacar(x2->valor);
-    }
-    q->auxiliar_derecho = p->auxiliar_derecho;
-    if(q->auxiliar_derecho)
-        q->auxiliar_derecho->auxiliar_izquierdo = q;
-    q->auxiliar_izquierdo = p;
-    p->auxiliar_derecho = q;
-
-    q->padre = p->padre;
-}
-
 ///     **************************************************************************************************
 ///     OBTENER ORDEN DEL NODO
 ///     PARAMETROS: NADA
@@ -454,6 +438,61 @@ Valor * Nodo::obtener_lugar_agregado(){
     return lugar_agregado;
 }
 
+///     **************************************************************************************************
+///     OBTENER EL PRINCIPIO DE UN NODO / HOJA
+///     **************************************************************************************************
+Valor * Nodo::obtener_principio(){
+    return principio;
+}
+
+///     **************************************************************************************************
+///     OBTENER LA MITAD DE UN NODO / HOJA
+///     **************************************************************************************************
+Valor * Nodo::obtener_mitad(){
+    return mitad;
+}
+
+///     **************************************************************************************************
+///     OBTENER EL AUXILIAR DERECHO DE UN NODO / HOJA
+///     **************************************************************************************************
+Nodo * Nodo::obtener_auxiliar_derecho(){
+    return auxiliar_derecho;
+}
+
+///     **************************************************************************************************
+///     ESTABLECER EL AUXILIAR DERECHO DE UN NODO / HOJA
+///     **************************************************************************************************
+void Nodo::establecer_auxiliar_derecho(Nodo * p){
+    auxiliar_derecho = p;
+}
+
+///     **************************************************************************************************
+///     ESTABLECER EL AUXILIAR IZQUIERDO DE UN NODO / HOJA
+///     **************************************************************************************************
+void Nodo::establecer_auxiliar_izquierdo(Nodo * p){
+    auxiliar_izquierdo = p;
+}
+
+///     **************************************************************************************************
+///     OBTENER EL AUXILIAR IZQUIERDO DE UN NODO / HOJA
+///     **************************************************************************************************
+Nodo * Nodo::obtener_auxiliar_izquierdo(){
+    return auxiliar_izquierdo;
+}
+
+///     **************************************************************************************************
+///     OBTENER EL PADRE DE UN NODO / HOJA
+///     **************************************************************************************************
+Nodo * Nodo::obtener_padre(){
+    return padre;
+}
+
+///     **************************************************************************************************
+///     ESTABLECE EL PADRE DE UN NODO
+///     **************************************************************************************************
+void Nodo::establecer_padre(Nodo * p){
+    padre = p;
+}
 
 ///     **************************************************************************************************
 ///     NODO ES HOJA

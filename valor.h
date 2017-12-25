@@ -10,6 +10,7 @@ struct Valor{
     Valor * siguiente_en_hoja;
     Valor * siguiente_en_nodo;
     Nodo * nodo;
+    Nodo * nodo_interno;
 };
 
 #endif // VALOR_H_INCLUDED

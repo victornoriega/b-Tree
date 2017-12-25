@@ -2,14 +2,16 @@
 #define ARBOL_BP_H_INCLUDED
 
 #include "nodo.h"
+#define ORDEN_RECOMENDADO 5
 class Arbol_BP{
     int orden;
     Nodo * raiz;
 public:
-    Arbol_BP();
-    Arbol_BP(int);
+    Arbol_BP(int ord = ORDEN_RECOMENDADO);
+    ~Arbol_BP();
+
     Nodo * buscar_hoja(int);
-    bool es_hoja(Nodo *);
+    void dividir_hoja(Nodo *, Nodo*);
     void pintar();
 };
 
