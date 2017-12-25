@@ -184,6 +184,8 @@ void Nodo::agregar_en_hoja(int a){
 
         q->siguiente_en_hoja = NULL;
         q->anterior_en_hoja = NULL;
+
+        ///mayores++;
     }else{
         Valor * p = mitad;
         if(p->valor <= a){  /// Aumenta los mayores
@@ -234,8 +236,7 @@ void Nodo::agregar_en_hoja(int a){
         mayores--;
         menores++;
         return;
-    }
-    if(menores - mayores > 1){
+    }else if(menores - mayores > 1){
         mitad = mitad->anterior_en_hoja;
         menores--;
         mayores++;
@@ -308,8 +309,7 @@ void Nodo::agregar_en_nodo(Valor * q){
         mayores--;
         menores++;
         return;
-    }
-    if(menores - mayores > 1){
+    }else if(menores - mayores > 1){
         mitad = mitad->anterior_en_nodo;
         menores--;
         mayores++;
@@ -325,80 +325,48 @@ void Nodo::agregar_en_nodo(Valor * q){
 ///     **************************************************************************************************
 int Nodo::sacar(int a){
     buscar(a);
-    Valor * p;
-    if(!encontrado){
+    if(!encontrado)
         return 0;
-    }else{
+    else{
+        Valor * p;
         if(donde == PRINCIPIO){
             p = principio;
             principio = p->siguiente_en_hoja;
 
-            if(p->valor < mitad->valor){
-                menores--;
-            }else{
-                mayores--;
-            }
-
-            delete p;
-            if(mayores - menores > 1){
-                mitad = mitad->siguiente_en_hoja;
-                mayores--;
-                menores++;
-            }
-            if(menores - mayores > 1){
-                mitad = mitad->anterior_en_hoja;
-                menores--;
-                mayores++;
-            }
         }else if(donde == FINAL){
             p = anterior->siguiente_en_hoja;
             anterior->siguiente_en_hoja = NULL;
 
-            if(p->valor < mitad->valor){
-                menores--;
-            }else{
-                mayores--;
-            }
-
-            delete p;
-            if(mayores - menores > 1){
-                mitad = mitad->siguiente_en_hoja;
-                mayores--;
-                menores++;
-            }
-            if(menores - mayores > 1){
-                mitad = mitad->anterior_en_hoja;
-                menores--;
-                mayores++;
-            }
         }else{
             p = anterior->siguiente_en_hoja;
             anterior->siguiente_en_hoja = p->siguiente_en_hoja;
-            p->siguiente_en_hoja->anterior_en_hoja = anterior;
+            anterior->siguiente_en_hoja->anterior_en_hoja = anterior;
 
-            if(p->valor < mitad->valor){
-                menores--;
-            }else{
-                mayores--;
-            }
-
-            delete p;
-            if(mayores - menores > 1){
-                mitad = mitad->siguiente_en_hoja;
-                mayores--;
-                menores++;
-            }
-            if(menores - mayores > 1){
-                mitad = mitad->anterior_en_hoja;
-                menores--;
-                mayores++;
-            }
         }
-    }
-    cuantos--;
-    return 1;
-}
+        if(p->valor < mitad->valor)             /// MENOR QUE LA MITAD
+            menores--;
+        else if(mitad->valor < p->valor)        /// MAYOR QUE LA MITAD
+            mayores--;
+        else{                                   /// ES LA MITAD
+            mitad = mitad->siguiente_en_hoja;
+            mayores--;
+        }
 
+        if(mayores - menores > 1){
+            mitad = mitad->siguiente_en_hoja;
+            mayores--;
+            menores++;
+        }else if(menores - mayores > 1){
+            mitad = mitad->anterior_en_hoja;
+            menores--;
+            mayores++;
+        }
+        delete p;
+
+        cuantos--;
+        return 1;
+    }
+}
 
 
 ///     **************************************************************************************************
@@ -438,9 +406,12 @@ void Nodo::pintar_nodo(){
 
 ///     **************************************************************************************************
 ///     DIVIDIR HOJA
-///     ESTE METODO DEBERIA IR EN EL ARBOL
+///     DADA UNA HOJA CON UNA CANTIDAD DE ELEMENTOS IGUAL AL ORDEN ESTA DEBE DIVIDIRSE
+///     PARAMETROS: Nodo * INDICA LA DIRECCION DE LA HOJA LLENA
+///                 Nodo * INDICA LA DIRECCION DE UNA HOJA VACIA QUE SE CONECTARA CON LA PRIMERA HOJA
+///     RETORNO: NADA
 ///     **************************************************************************************************
-/**void Nodo::dividir_hoja(Nodo * p, Nodo * q){
+void Nodo::dividir_hoja(Nodo * p, Nodo * q){
     Valor * x1 = p->mitad;
     Valor * x2;
     while(x1){
@@ -456,13 +427,24 @@ void Nodo::pintar_nodo(){
     p->auxiliar_derecho = q;
 
     q->padre = p->padre;
-}**/
+}
 
 ///     **************************************************************************************************
 ///     OBTENER ORDEN DEL NODO
+///     PARAMETROS: NADA
+///     RETORNO: ENTERO QUE INDICA EL ORDEN DEL NODO
 ///     **************************************************************************************************
 int Nodo::obtener_orden(){
     return orden;
+}
+
+///     **************************************************************************************************
+///     OBTENER LA CANTIDAD DE ELEMENTOS EN EL NODO / HOJA
+///     PARAMETROS: NADA
+///     RETORNO: ENTERO QUE INDICA LA CANTIDAD DE ELEMENTOS EN EL NODO / HOJA
+///     **************************************************************************************************
+int Nodo::obtener_cuantos(){
+    return cuantos;
 }
 
 ///     **************************************************************************************************
@@ -470,4 +452,18 @@ int Nodo::obtener_orden(){
 ///     **************************************************************************************************
 Valor * Nodo::obtener_lugar_agregado(){
     return lugar_agregado;
+}
+
+
+///     **************************************************************************************************
+///     NODO ES HOJA
+///     NOS DICE SI UN DETERMINADO NODO ES HOJA O NO
+///     PARAMETROS: NADA
+///     RETORNO: BOOLEANO QUE INDICA SI EL NODO ES HOJA
+///     **************************************************************************************************
+bool Nodo::nodo_es_hoja(){
+    if(es_hoja)
+        return true;
+    else
+        return false;
 }
