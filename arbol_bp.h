@@ -17,6 +17,7 @@ public:
     bool crecer(Nodo *);
 
     void dividir_hoja(Nodo *, Nodo*);
+    void partir_raiz();
     void pintar();
 };
 

@@ -118,12 +118,12 @@ void Arbol_BP::agregar(int a){
 
             dividir_hoja(p,q);                  /// SE DIVIDE LA HOJA
 
-            /**if(a >= 15){
+            /**if(a >= 14){
                 Valor * y1 = p->obtener_principio();
                 Valor * y2 = q->obtener_principio();
 
                 while(y1){
-                    cout << "En p, Valor: " << y1->valor << endl;
+                    ///cout << "En p, Valor: " << y1->valor << endl;
                     y1 = y1->siguiente_en_hoja;
                 }
                 while(y2){
@@ -175,7 +175,7 @@ void Arbol_BP::subir(Nodo * p, Nodo * q){
             q->obtener_principio()->nodo = q;                                /// EL PRINCIPIO DE LA HOJA HACE REFERENCIA A LA HOJA
             q->obtener_principio()->nodo_interno = p->obtener_padre();      /// SE LE DICE AL VALOR INICIAL EN QUE NODO INTERNO ESTA
         }else{
-            cout << "Funcion crecer" << endl;
+            ///cout << "Funcion crecer" << endl;
             /// No me convence ese agregar en nodo
             p->obtener_padre()->agregar_en_nodo(q->obtener_principio());    /// SE AGREGA EL PRINCIPIO DE Q AL PADRE
             q->establecer_padre(p->obtener_padre());                        /// SE ESTABLECE EL PADRE DE Q
@@ -183,12 +183,12 @@ void Arbol_BP::subir(Nodo * p, Nodo * q){
             q->obtener_principio()->nodo = q;                               /// EL PRINCIPIO DE LA HOJA HACE REFERENCIA A LA HOJA
             q->obtener_principio()->nodo_interno = p->obtener_padre();      /// SE LE DICE AL VALOR INICIAL EN QUE NODO INTERNO ESTA
 
-            Nodo * auxiliar = p->obtener_padre();
+            ///Nodo * auxiliar = p->obtener_padre();
             ///crecer(auxiliar);
-            /**Nodo * auxiliar = p->obtener_padre();                   /// AUXILIAR ES UN NODO INTERNO
+            Nodo * auxiliar = p->obtener_padre();                   /// AUXILIAR ES UN NODO INTERNO
             while(!crecer(auxiliar)){                               /// INDICA SI SE NECESITA CRECER
                 auxiliar = auxiliar->obtener_padre();
-            }**/
+            }
         }
     }
 }
@@ -200,9 +200,9 @@ void Arbol_BP::subir(Nodo * p, Nodo * q){
 ///     RETORNO:
 ///     **************************************************************************************************
 bool Arbol_BP::crecer(Nodo * p){
-    return true;
+    ///return true;
     ///cout << "Primer valor del nodo: " << p->obtener_principio()->valor << endl;
-    /**Nodo * q = new Nodo();
+    Nodo * q = new Nodo();
     q->nuevo_nodo();
 
     Valor * valor_subir = p->obtener_mitad();
@@ -215,9 +215,11 @@ bool Arbol_BP::crecer(Nodo * p){
         a1 = a1->siguiente_en_nodo;
         p->sacar_de_nodo(a2);
         q->agregar_en_nodo(a2);
+        a2->nodo->establecer_padre(q);
     }
 
     q->establecer_auxiliar_izquierdo(valor_subir->nodo);
+    q->obtener_auxiliar_izquierdo()->establecer_padre(q);
     valor_subir->nodo = q;
 
     if(!p->obtener_padre()){
@@ -232,23 +234,23 @@ bool Arbol_BP::crecer(Nodo * p){
         /// ***********************************************
         altura += 1;
         /// ***********************************************
-        cout << "Parte cero" << endl;
+        ///cout << "Parte cero" << endl;
         return true;
     }else{
         if(p->obtener_padre()->obtener_cuantos() < orden - 1){
             p->obtener_padre()->agregar_en_nodo(valor_subir);
             q->establecer_padre(p->obtener_padre());
             valor_subir->nodo_interno = p->obtener_padre();
-            cout << "Parte uno" << endl;
+            ///cout << "Parte uno" << endl;
             return true;
         }else{
             p->obtener_padre()->agregar_en_nodo(valor_subir);
             q->establecer_padre(p->obtener_padre());
             valor_subir->nodo_interno = p->obtener_padre();
-            cout << "Parte dos" << endl;
+            ///cout << "Parte dos" << endl;
             return false;
         }
-    }**/
+    }
 
 
     ///return true;
@@ -281,6 +283,38 @@ void Arbol_BP::dividir_hoja(Nodo * p, Nodo * q){
     q->establecer_padre(p->obtener_padre());
 }
 
+void Arbol_BP::partir_raiz(){
+    Nodo * p = raiz;
+    Valor * mitad_raiz = p->obtener_mitad();
+    p->sacar_de_nodo(mitad_raiz);
+
+    Valor * a1 = p->obtener_mitad();
+    Valor * a2;
+
+    Nodo * q = new Nodo();
+    q->nuevo_nodo();
+
+    Nodo * nueva_raiz = new Nodo();
+    nueva_raiz->nuevo_nodo();
+    raiz = nueva_raiz;
+
+    altura++;
+
+    while(a1){
+        a2 = a1;
+        a1 = a1->siguiente_en_nodo;
+        p->sacar_de_nodo(a2);
+        q->agregar_en_nodo(a2);
+    }
+    q->establecer_auxiliar_izquierdo(mitad_raiz->nodo);
+    mitad_raiz->nodo = q;
+    mitad_raiz->nodo_interno = nueva_raiz;
+    nueva_raiz->establecer_auxiliar_izquierdo(p);
+
+    p->establecer_padre(nueva_raiz);
+    q->establecer_padre(nueva_raiz);
+}
+
 ///     **************************************************************************************************
 ///     PINTAR LOS ELEMENTOS DENTRO DEL ARBOL
 ///     SE VA A LA PRIMERA HOJA DEL ARBOL Y RECORRE LAS HOJAS PINTANDO LOS ELEMENTOS
@@ -288,11 +322,18 @@ void Arbol_BP::dividir_hoja(Nodo * p, Nodo * q){
 ///     RETORNO: NADA
 ///     **************************************************************************************************
 void Arbol_BP::pintar(){
-    int valor_minimo = numeric_limits<int>::min();
+    /**int valor_minimo = numeric_limits<int>::min();
     Nodo * hoja = buscar_hoja(valor_minimo);
     Valor * p;
     while(hoja){
         cout << "Hoja" << endl;
+        if(hoja->obtener_padre()){
+            Valor * a1 = hoja->obtener_padre()->obtener_principio();
+            while(a1){
+                cout << "Valor en el padre: " << a1->valor << endl;
+                a1 = a1->siguiente_en_nodo;
+            }
+        }
         p = hoja->obtener_principio();
         while(p){
             cout << "Valor: " << p->valor << endl;
@@ -300,10 +341,17 @@ void Arbol_BP::pintar(){
         }
         cout << endl;
         hoja = hoja->obtener_auxiliar_derecho();
-    }
+    }**/
+    cout << "La altura del arbol es: " << altura << endl;
+    /**Nodo * en_raiz = raiz;
+    Valor * valores = en_raiz->obtener_principio();
+    while(valores){
+        cout << "Valor en raiz: " << valores->valor << endl;
+        valores = valores->siguiente_en_nodo;
+    }**/
     ///cout << "Elementos en la raiz: " << raiz->obtener_cuantos() << endl;
     ///cout << "Valor en la raiz: " << raiz->obtener_principio()->valor << endl;
-    if(raiz->obtener_principio()->nodo){
+    /**if(raiz->obtener_principio()->nodo){
         Valor * asd = raiz->obtener_principio()->nodo->obtener_principio();
         while(asd){
             cout << "Prueba del nodo: " << asd->valor << endl;
@@ -369,5 +417,24 @@ void Arbol_BP::pintar(){
         }
         cout << "Valor en nueva raiz: " << nueva_raiz->valor << endl;
         nueva_raiz = nueva_raiz->siguiente_en_nodo;
+    }**/
+    /**Nodo * y = raiz;
+    Valor * y2 = y->obtener_principio();
+    while(y2){
+        cout << "En la raiz: " << y2->valor << endl;
+        y2 = y2->siguiente_en_nodo;
     }
+
+    Nodo * x1 = y->obtener_auxiliar_izquierdo();
+    Nodo * x2 = y->obtener_principio()->nodo;
+    Valor * p1 = x1->obtener_principio();
+    Valor * p2 = x2->obtener_principio();
+    while(p1){
+        cout << "Parte izquierda: " << p1->valor << endl;
+        p1 = p1->siguiente_en_nodo;
+    }
+    while(p2){
+        cout << "Parte derecha: " << p2->valor << endl;
+        p2 = p2->siguiente_en_nodo;
+    }**/
 }

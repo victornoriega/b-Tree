@@ -57,7 +57,7 @@ int main(){
     A->agregar(13);
     A->agregar(14);
     A->agregar(15);**/
-    for(int i = 1 ; i < 22 ; i++){
+    for(int i = 1 ; i <= 2500000 ; i++){
         A->agregar(i);
     }
 
