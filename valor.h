@@ -9,8 +9,8 @@ struct Valor{
     Valor * anterior_en_nodo;
     Valor * siguiente_en_hoja;
     Valor * siguiente_en_nodo;
-    Nodo * nodo;
-    Nodo * nodo_interno;
+    Nodo * nodo;                /// REFERENCIA AL NODO / HOJA QUE DEBE REDIRIGIR EL VALOR
+    Nodo * nodo_interno;        /// REFERENCIA AL NODO INTERNO EN EL QUE SE ENCUENTRA EL VALOR
 };
 
 #endif // VALOR_H_INCLUDED

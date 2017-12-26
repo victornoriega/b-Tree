@@ -314,7 +314,6 @@ void Nodo::agregar_en_nodo(Valor * q){
         }
     }
     cuantos++;
-    /// CHECAR LA CANTIDAD DE CUANTOS Y EL ORDEN PARA MANTENER EL SPLIT.
     if(mayores - menores > 1){
         mitad = mitad->siguiente_en_nodo;
         mayores--;
@@ -379,6 +378,50 @@ int Nodo::sacar(int a){
     }
 }
 
+///     **************************************************************************************************
+///     SACAR DE NODO
+///     DESCRIPCION:
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+void Nodo::sacar_de_nodo(Valor * p){
+    if(p->siguiente_en_nodo)
+        p->siguiente_en_nodo->anterior_en_nodo = p->anterior_en_nodo;
+    if(p->anterior_en_nodo)
+        p->anterior_en_nodo->siguiente_en_nodo = p->siguiente_en_nodo;
+
+    ///cout << "2" << endl;
+
+    if(p->valor < mitad->valor)             /// MENOR QUE LA MITAD
+        menores--;
+    else if(mitad->valor < p->valor)        /// MAYOR QUE LA MITAD
+        mayores--;
+    else{                                   /// ES LA MITAD
+        mitad = mitad->siguiente_en_nodo;
+        mayores--;
+    }
+
+    p->siguiente_en_nodo = NULL;
+    p->anterior_en_nodo = NULL;
+
+    ///cout << "3" << endl;
+
+    /// NO HAY MITAD
+    if(mayores - menores > 1){
+        mitad = mitad->siguiente_en_nodo;
+        mayores--;
+        menores++;
+    }else if(menores - mayores > 1){
+        if(mitad)
+            ///cout << "Hay mitad" << endl;
+        ///cout << "-3.5" << endl;
+        ///cout << mitad->valor << endl;
+        mitad = mitad->anterior_en_nodo;
+        menores--;
+        mayores++;
+    }
+    ///cout << "4" << endl;
+}
 
 ///     **************************************************************************************************
 ///     PINTAR HOJA

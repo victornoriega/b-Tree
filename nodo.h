@@ -31,6 +31,7 @@ public:
     void agregar_en_hoja(int);
     void agregar_en_nodo(Valor *);
     int sacar(int);
+    void sacar_de_nodo(Valor *);
 
     /// FUNCIONES UTILES
     Valor * obtener_lugar_agregado();

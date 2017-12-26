@@ -4,6 +4,7 @@
 #include "nodo.h"
 #define ORDEN_RECOMENDADO 5
 class Arbol_BP{
+    int altura;
     int orden;
     Nodo * raiz;
 public:
@@ -13,6 +14,7 @@ public:
     Nodo * buscar_hoja(int);
     void agregar(int);
     void subir(Nodo *, Nodo *);
+    bool crecer(Nodo *);
 
     void dividir_hoja(Nodo *, Nodo*);
     void pintar();
