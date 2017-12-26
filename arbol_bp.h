@@ -11,6 +11,9 @@ public:
     ~Arbol_BP();
 
     Nodo * buscar_hoja(int);
+    void agregar(int);
+    void subir(Nodo *, Nodo *);
+
     void dividir_hoja(Nodo *, Nodo*);
     void pintar();
 };

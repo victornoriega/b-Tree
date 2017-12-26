@@ -1,25 +1,31 @@
 #include <iostream>
-#include "nodo.h"
+#include "arbol_bp.h"
 
 using namespace std;
 
 int main(){
-    Nodo * A = new Nodo();
-    Nodo * B = new Nodo();
+    Arbol_BP * A = new Arbol_BP();
 
-    A->nueva_hoja();
-    B->nuevo_nodo();
+    /**A->agregar(9);
+    A->agregar(8);
+    A->agregar(7);
+    A->agregar(6);
+    A->agregar(5);
+    A->agregar(4);
+    A->agregar(3);
+    A->agregar(2);
+    A->agregar(1);**/
 
-    A->agregar_en_hoja(5);
-    A->agregar_en_hoja(4);
-    A->agregar_en_hoja(3);
-    A->agregar_en_hoja(2);
-    A->agregar_en_hoja(1);
-    A->pintar_hoja();
+    A->agregar(1);
+    A->agregar(2);
+    A->agregar(3);
+    A->agregar(4);
+    A->agregar(5);
+    A->agregar(6);
+    A->agregar(7);
+    A->agregar(8);
+    A->agregar(9);
 
-    A->sacar(1);
-    A->sacar(2);
-    A->sacar(3);
-    A->pintar_hoja();
+    A->pintar();
     return 0;
 }
