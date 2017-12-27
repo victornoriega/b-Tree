@@ -385,12 +385,11 @@ int Nodo::sacar(int a){
 ///     RETORNO:
 ///     **************************************************************************************************
 void Nodo::sacar_de_nodo(Valor * p){
+    cuantos--;
     if(p->siguiente_en_nodo)
         p->siguiente_en_nodo->anterior_en_nodo = p->anterior_en_nodo;
     if(p->anterior_en_nodo)
         p->anterior_en_nodo->siguiente_en_nodo = p->siguiente_en_nodo;
-
-    ///cout << "2" << endl;
 
     if(p->valor < mitad->valor)             /// MENOR QUE LA MITAD
         menores--;
@@ -404,23 +403,16 @@ void Nodo::sacar_de_nodo(Valor * p){
     p->siguiente_en_nodo = NULL;
     p->anterior_en_nodo = NULL;
 
-    ///cout << "3" << endl;
-
     /// NO HAY MITAD
     if(mayores - menores > 1){
         mitad = mitad->siguiente_en_nodo;
         mayores--;
         menores++;
     }else if(menores - mayores > 1){
-        if(mitad)
-            ///cout << "Hay mitad" << endl;
-        ///cout << "-3.5" << endl;
-        ///cout << mitad->valor << endl;
         mitad = mitad->anterior_en_nodo;
         menores--;
         mayores++;
     }
-    ///cout << "4" << endl;
 }
 
 ///     **************************************************************************************************
