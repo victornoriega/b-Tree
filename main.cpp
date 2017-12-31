@@ -7,13 +7,8 @@ int main(){
     Arbol_BP * A = new Arbol_BP();
     ///escribir_en_archivo();
     ///tomar_valores_de_archivo(A);
-    /**for(int i = 2500000 ; i >= 1 ; i--){
-        A->agregar(i);
-    }**/
-    /**for(int i = 1 ; i <= 25 ; i++){
-        A->agregar(i);
-    }**/
-    A->agregar(36);
+
+    /**A->agregar(36);
     A->agregar(92);
     A->agregar(13);
     A->agregar(21);
@@ -34,7 +29,8 @@ int main(){
     A->agregar(115);
     A->agregar(75);
     A->sacar(21);
-    A->sacar(13);
+    A->sacar(13);**/
+
     ///A->sacar(21);
     ///A->agregar(87);
     ///A->agregar(156);
@@ -42,9 +38,14 @@ int main(){
     /**for(int i = 0 ; i < 2500000 ; i++){
         A->agregar(i);
     }**/
-    /**for(int i = 2500000 ; i >= 0 ; i--){
+    for(int i = 20 ; i >= 1 ; i--){
         A->agregar(i);
-    }**/
+    }
+    /**A->sacar(2);
+    A->sacar(4);
+    A->sacar(15);
+    A->sacar(16);
+    A->sacar(17);**/
     A->pintar();
     return 0;
 }

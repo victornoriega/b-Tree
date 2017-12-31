@@ -124,7 +124,30 @@ bool Arbol_BP::sacar(int a){
         return false;
     }else{
         if(p->obtener_cuantos() > (orden / 2)){                     /// LOS NUMEROS PERMITEN SACAR UN ELEMENTO
-            p->sacar_de_hoja(a);
+
+            Valor * valor_en_nodo = p->obtener_principio();
+            while(true){
+                if(valor_en_nodo->valor == a)
+                    break;
+                valor_en_nodo = valor_en_nodo->siguiente_en_hoja;
+            }
+            if(!valor_en_nodo->nodo_interno)            /// SI EL VALOR A SACAR NO ESTA DENTRO DE UN NODO
+                p->sacar_de_hoja(a);
+            else{                                       /// EL VALOR A SACAR ESTA DENTRO DE UN NODO
+                Nodo * nodo_interno = valor_en_nodo->nodo_interno;
+                Nodo * nodo = valor_en_nodo->nodo;
+
+                valor_en_nodo->nodo_interno = NULL;
+                valor_en_nodo->nodo = NULL;
+
+                valor_en_nodo->siguiente_en_hoja->nodo_interno = nodo_interno;
+                valor_en_nodo->siguiente_en_hoja->nodo = nodo;
+
+                nodo_interno->sacar_de_nodo(valor_en_nodo);
+                nodo_interno->agregar_en_nodo(valor_en_nodo->siguiente_en_hoja);
+
+                p->sacar_de_hoja(valor_en_nodo->valor);
+            }
         }else{                                                      /// LA CANTIDAD DE ELEMENTOS ES LA MINIMA
             if(p->obtener_auxiliar_izquierdo() || p->obtener_auxiliar_derecho()){
                 if(p->obtener_auxiliar_izquierdo() && p->obtener_auxiliar_izquierdo()->obtener_cuantos() > (orden / 2)){
