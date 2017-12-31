@@ -10,8 +10,8 @@ void escribir_en_archivo(){
     srand(time(NULL));
     ofstream archivo("valores.txt");
     if(archivo.is_open()){
-        for(int i = 1 ; i <= 150 ; i++){
-            archivo << rand() % 1000 + 1 << "\t" ;
+        for(int i = 1 ; i <= 1000 ; i++){
+            archivo << rand() % 800000 + 1 << "\t" ;
             if(i % 10 == 0)
                 archivo << "\n";
         }
@@ -20,7 +20,7 @@ void escribir_en_archivo(){
 }
 
 void tomar_valores_de_archivo(Arbol_BP * A){
-    ifstream archivo("valores.txt");
+    ifstream archivo("numeros_al_azar.txt");
     int x;
     if(archivo.is_open()){
         while(true){

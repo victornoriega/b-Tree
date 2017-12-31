@@ -13,12 +13,15 @@ public:
 
     Nodo * buscar_hoja(int);
     void agregar(int);
+    bool sacar(int);
     void subir(Nodo *, Nodo *);
     bool crecer(Nodo *);
 
     void dividir_hoja(Nodo *, Nodo*);
     void partir_raiz();
     void pintar();
+    void empujar_izquierdo(Nodo *, Nodo *, int);
+    void empujar_derecho(Nodo *, Nodo *, int);
 };
 
 #endif // ARBOL_BP_H_INCLUDED

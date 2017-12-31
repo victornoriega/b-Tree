@@ -103,48 +103,41 @@ void Arbol_BP::agregar(int a){
         }else{                                  /// EXISTE RAIZ PERO NO TIENE ESPACIO
             p->agregar_en_hoja(a);
 
-            /**if(a == 1){
-                Valor * y3 = p->obtener_principio();
-                while(y3){
-                    cout << "En p, Valor: " << y3->valor << endl;
-                    y3 = y3->siguiente_en_hoja;
-                }
-                Nodo * a1 = p->obtener_padre();
-                Valor * b1 = a1->obtener_principio();
-                while(b1){
-                    cout << "En el padre de la hoja: " << b1->valor << endl;
-                    b1 = b1->siguiente_en_nodo;
-                }
-            }**/
-
             Nodo * q = new Nodo();
             q->nueva_hoja();
 
             dividir_hoja(p,q);                  /// SE DIVIDE LA HOJA
-
-            /**if(a == 1){
-                Valor * y1 = p->obtener_principio();
-                Valor * y2 = q->obtener_principio();
-
-                while(y1){
-                    cout << "En p, Valor: " << y1->valor << endl;
-                    y1 = y1->siguiente_en_hoja;
-                }
-                while(y2){
-                    cout << "En q, Valor: " << y2->valor << endl;
-                    y2 = y2->siguiente_en_hoja;
-                }
-                if(p->obtener_padre()){
-                    Valor * y4 = p->obtener_padre()->obtener_principio();
-                    while(y4){
-                        cout << "Padre del nodo     asddd: " << y4->valor << endl;
-                        y4 = y4->siguiente_en_nodo;
-                    }
-                }
-            }**/
             subir(p,q);
         }
     }
+}
+
+///     **************************************************************************************************
+///     SACAR
+///     DESCRIPCION:
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+bool Arbol_BP::sacar(int a){
+    Nodo * p = buscar_hoja(a);
+    if(!p){
+        return false;
+    }else{
+        if(p->obtener_cuantos() > (orden / 2)){                     /// LOS NUMEROS PERMITEN SACAR UN ELEMENTO
+            p->sacar_de_hoja(a);
+        }else{                                                      /// LA CANTIDAD DE ELEMENTOS ES LA MINIMA
+            if(p->obtener_auxiliar_izquierdo() || p->obtener_auxiliar_derecho()){
+                if(p->obtener_auxiliar_izquierdo() && p->obtener_auxiliar_izquierdo()->obtener_cuantos() > (orden / 2)){
+                    empujar_izquierdo(p, p->obtener_auxiliar_izquierdo(), a);
+                }else if(p->obtener_auxiliar_derecho() && p->obtener_auxiliar_derecho()->obtener_cuantos() > (orden / 2)){
+                    empujar_derecho(p,p->obtener_auxiliar_derecho(),a);
+                }else{      /// O LAS HOJAS NO EXISTEN O NO COMPLEN CON EL MINIMO NECESARIO
+
+                }
+            }
+        }
+    }
+    return true;
 }
 
 ///     **************************************************************************************************
@@ -155,7 +148,6 @@ void Arbol_BP::agregar(int a){
 ///     **************************************************************************************************
 void Arbol_BP::subir(Nodo * p, Nodo * q){
     /// P y Q SON HOJAS
-    Valor * a33 = p->obtener_principio();
     if(!p->obtener_padre()){                /// P NO TIENE PADRE, CREANDO NUEVA RAIZ
         Nodo * z = new Nodo();              /// SE CREA UN NUEVO NODO RAIZ
         z->nuevo_nodo();
@@ -166,6 +158,7 @@ void Arbol_BP::subir(Nodo * p, Nodo * q){
 
         z->establecer_auxiliar_izquierdo(p);                /// SE VINCULA P AL AUX IZQ DEL PADRE
         z->agregar_en_nodo(q->obtener_principio());         /// SE AGREGA EL VALOR INICIAL DE Q
+
         q->obtener_principio()->nodo = q;                   /// EL PRINCIPIO DE LA HOJA HACE REFERENCIA A LA HOJA
         q->obtener_principio()->nodo_interno = z;           /// SE LE DICE AL VALOR INICIAL EN QUE NODO INTERNO ESTA
         /// ***********************************************
@@ -214,6 +207,7 @@ bool Arbol_BP::crecer(Nodo * p){
         p->sacar_de_nodo(a2);
         q->agregar_en_nodo(a2);
         a2->nodo->establecer_padre(q);
+        a2->nodo_interno = q;
     }
 
     q->establecer_auxiliar_izquierdo(valor_subir->nodo);
@@ -275,36 +269,141 @@ void Arbol_BP::dividir_hoja(Nodo * p, Nodo * q){
     q->establecer_padre(p->obtener_padre());
 }
 
-void Arbol_BP::partir_raiz(){
-    Nodo * p = raiz;
-    Valor * mitad_raiz = p->obtener_mitad();
-    p->sacar_de_nodo(mitad_raiz);
+///     **************************************************************************************************
+///     EMPUJAR IZQUIERDO
+///     DESCRIPCION: SI LA HOJA IZQUIERDA A LA HOJA DONDE SE HARA LA ELIMINACION PUEDE PRESTAR UN VALOR A LA HOJA
+///     SE TOMA EL VALOR MAYOR DENTRO DE LA HOJA IZQUERDA.
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+void Arbol_BP::empujar_izquierdo(Nodo * p, Nodo * q, int a){
+    Nodo * hoja_actual = p;
+    Nodo * hoja_izquierda = q;
 
-    Valor * a1 = p->obtener_mitad();
-    Valor * a2;
-
-    Nodo * q = new Nodo();
-    q->nuevo_nodo();
-
-    Nodo * nueva_raiz = new Nodo();
-    nueva_raiz->nuevo_nodo();
-    raiz = nueva_raiz;
-
-    altura++;
-
-    while(a1){
-        a2 = a1;
-        a1 = a1->siguiente_en_nodo;
-        p->sacar_de_nodo(a2);
-        q->agregar_en_nodo(a2);
+    Valor * valor_prestado = hoja_izquierda->obtener_principio();
+    while(true){                                    /// OBTENER EL ULTIMO ELEMENTO DEL NODO IZQUIERDO
+        if(!valor_prestado->siguiente_en_hoja)
+            break;
+        valor_prestado = valor_prestado->siguiente_en_hoja;
     }
-    q->establecer_auxiliar_izquierdo(mitad_raiz->nodo);
-    mitad_raiz->nodo = q;
-    mitad_raiz->nodo_interno = nueva_raiz;
-    nueva_raiz->establecer_auxiliar_izquierdo(p);
 
-    p->establecer_padre(nueva_raiz);
-    q->establecer_padre(nueva_raiz);
+    Valor * valor_a_sacar = hoja_actual->obtener_principio();
+    while(true){                                    /// OBTENER EL VALOR A SACAR DE LA HOJA
+        if(valor_a_sacar->valor == a)
+            break;
+        valor_a_sacar = valor_a_sacar->siguiente_en_hoja;
+    }
+
+    int valor_izquierdo = valor_prestado->valor;
+    hoja_izquierda->sacar_de_hoja(valor_izquierdo);
+
+    Nodo * nodo_interno;
+    Nodo * nodo;
+    if(valor_a_sacar->nodo_interno){                                        /// EL VALOR A SACAR ES EL PRINCIPIO DE LA HOJA
+        nodo_interno = valor_a_sacar->nodo_interno;
+        nodo_interno->sacar_de_nodo(valor_a_sacar);
+        valor_a_sacar->nodo_interno = NULL;
+
+        nodo = valor_a_sacar->nodo;
+        valor_a_sacar->nodo = NULL;
+
+        p->sacar_de_hoja(a);
+        p->agregar_en_hoja(valor_izquierdo);
+
+        p->obtener_lugar_agregado()->nodo = nodo;
+        p->obtener_lugar_agregado()->nodo_interno = nodo_interno;
+
+        nodo_interno->agregar_en_nodo(p->obtener_lugar_agregado());
+    }
+    else{                                                                  /// EL VALOR A SACAR ESTA EN LA HOJA
+        nodo_interno = p->obtener_principio()->nodo_interno;
+        nodo_interno->sacar_de_nodo(p->obtener_principio());
+        p->obtener_principio()->nodo_interno = NULL;
+
+        nodo = p->obtener_principio()->nodo;
+        p->obtener_principio()->nodo = NULL;
+
+        p->sacar_de_hoja(a);
+        p->agregar_en_hoja(valor_izquierdo);
+
+        p->obtener_lugar_agregado()->nodo = nodo;
+        p->obtener_lugar_agregado()->nodo_interno = nodo_interno;
+
+        nodo_interno->agregar_en_nodo(p->obtener_lugar_agregado());
+    }
+}
+
+///     **************************************************************************************************
+///     EMPUJAR DERECHO
+///     DESCRIPCION: SI LA HOJA DERECHA A LA HOJA DONDE SE HARA LA ELIMINACION PUEDE PRESTAR UN VALOR A LA HOJA
+///     SE TOMA EL VALOR MENOR DENTRO DE LA HOJA DERECHA.
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+void Arbol_BP::empujar_derecho(Nodo *p, Nodo *q, int a){
+    Nodo * hoja_actual = p;
+    Nodo * hoja_derecha = q;
+
+    Nodo * nodo_interno;
+    Nodo * nodo;
+
+    Valor * valor_a_sacar = hoja_actual->obtener_principio();         /// VALOR QUE SE SACARA DE LA HOJA ACTUAL
+    while(true){
+        if(valor_a_sacar->valor == a)
+            break;
+        valor_a_sacar = valor_a_sacar->siguiente_en_hoja;
+    }
+
+    Valor * valor_prestado = hoja_derecha->obtener_principio();        /// TOMAR EL PRINCIPIO DEL NODO DERECHO
+
+    int valor_derecho = hoja_derecha->obtener_principio()->valor;
+
+    if(valor_prestado->nodo_interno && valor_a_sacar->nodo_interno){    /// AMBOS ESTAN EN NODOS INTERNOS
+        int auxiliar = valor_a_sacar->valor;
+        Nodo * nodo_interno_hoja_act = valor_a_sacar->nodo_interno;
+        valor_a_sacar->nodo_interno = NULL;
+        Nodo * nodo_hoja_act = valor_a_sacar->nodo;
+        valor_a_sacar->nodo = NULL;
+
+        valor_a_sacar->siguiente_en_hoja->nodo_interno = valor_a_sacar->nodo_interno;
+        valor_a_sacar->siguiente_en_hoja->nodo = valor_a_sacar->nodo;
+
+        nodo_interno_hoja_act->sacar_de_nodo(valor_a_sacar);
+        nodo_interno_hoja_act->agregar_en_nodo(valor_a_sacar->siguiente_en_hoja);
+
+        hoja_actual->sacar_de_hoja(auxiliar);
+        hoja_actual->agregar_en_hoja(valor_prestado->valor);
+
+        /// *******************************************************************************************
+
+        nodo_interno = valor_prestado->nodo_interno;
+        nodo_interno->sacar_de_nodo(valor_prestado);
+        nodo_interno->agregar_en_nodo(valor_prestado->siguiente_en_hoja);
+
+        valor_prestado->siguiente_en_hoja->nodo_interno = valor_prestado->nodo_interno;
+        valor_prestado->siguiente_en_hoja->nodo = valor_prestado->nodo;
+
+        valor_prestado->nodo_interno = NULL;
+        valor_prestado->nodo = NULL;
+
+        hoja_derecha->sacar_de_hoja(valor_derecho);
+
+    }else if(valor_prestado->nodo_interno){                 /// SOLO EL VALOR PRESTADO ESTA EN UN NODO
+        hoja_actual->sacar_de_hoja(a);
+        hoja_actual->agregar_en_hoja(valor_prestado->valor);
+
+        nodo_interno = valor_prestado->nodo_interno;
+        nodo_interno->sacar_de_nodo(valor_prestado);
+        nodo_interno->agregar_en_nodo(valor_prestado->siguiente_en_hoja);
+
+        valor_prestado->siguiente_en_hoja->nodo_interno = valor_prestado->nodo_interno;
+        valor_prestado->siguiente_en_hoja->nodo = valor_prestado->nodo;
+
+        valor_prestado->nodo_interno = NULL;
+        valor_prestado->nodo = NULL;
+
+        hoja_derecha->sacar_de_hoja(valor_derecho);
+    }
 }
 
 ///     **************************************************************************************************
@@ -317,6 +416,7 @@ void Arbol_BP::pintar(){
     int valor_minimo = numeric_limits<int>::min();
     Nodo * hoja = buscar_hoja(valor_minimo);
     Valor * p;
+    Valor * primero;
     while(hoja){
         cout << "Hoja" << endl;
         if(hoja->obtener_padre()){
@@ -334,5 +434,12 @@ void Arbol_BP::pintar(){
         cout << endl;
         hoja = hoja->obtener_auxiliar_derecho();
     }
-    cout << "La altura del arbol es: " << altura << endl;
+
+    Nodo * en_la_raiz = raiz;
+    Valor * valores_raiz = en_la_raiz->obtener_principio();
+    while(valores_raiz){
+        cout << "En la raiz: " << valores_raiz->valor << endl;
+        valores_raiz = valores_raiz->siguiente_en_nodo;
+    }
+    cout << "Altura: " << altura << endl;
 }

@@ -160,6 +160,7 @@ void Nodo::buscar(int a){
                 }else{
                     donde = ENMEDIO;
                 }
+                encontrado = false;
                 return;
             }else{
                 anterior = p;
@@ -195,10 +196,9 @@ void Nodo::agregar_en_hoja(int a){
 
         q->siguiente_en_hoja = NULL;
         q->anterior_en_hoja = NULL;
-
-        ///mayores++;
     }else{
         Valor * p = mitad;
+        Valor * aux = principio;
         if(p->valor <= a){  /// Aumenta los mayores
             mayores++;
             Valor * r;
@@ -379,31 +379,152 @@ int Nodo::sacar(int a){
 }
 
 ///     **************************************************************************************************
+///     SACAR DE HOJA
+///     SACA UN VALOR DE UNA HOJA Y REVISA LA POSICION DEL VALOR A SACAR DENTRO DEL ARBOL. SI EL VALOR ESTABA EN UN
+///     NODO INTERNO PERO LA HOJA TIENE MAS ELEMENTOS DE LOS MINIMOS ENTONCES SE MANTIENE EL VALOR EN EL NODO INTERNO
+///     DESCRIPCION:
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+bool Nodo::sacar_de_hoja(int a){
+    buscar(a);
+    if(!encontrado){
+        return false;
+    }else{
+        Valor * p;
+        Valor * q = new Valor;
+        q->siguiente_en_hoja = NULL;
+        q->anterior_en_hoja = NULL;
+
+        Nodo * nodo_interno;
+        if(donde == PRINCIPIO){
+            p = principio;
+            q->valor = p->valor;
+
+            if(p->nodo){
+                q->nodo = p->nodo;
+            }
+            if(p->nodo_interno){
+                q->nodo_interno = p->nodo_interno;
+                nodo_interno = p->nodo_interno;
+                nodo_interno->sacar_de_nodo(p);
+                nodo_interno->agregar_en_nodo(q);
+            }
+            principio = p->siguiente_en_hoja;
+            principio->anterior_en_hoja = NULL;
+        }else if(donde == FINAL){
+            p = anterior->siguiente_en_hoja;
+            q->valor = p->valor;
+
+            if(p->nodo){
+                q->nodo = p->nodo;
+            }
+            if(p->nodo_interno){
+                q->nodo_interno = p->nodo_interno;
+                nodo_interno = p->nodo_interno;
+                nodo_interno->sacar_de_nodo(p);
+                nodo_interno->agregar_en_nodo(q);
+            }
+            anterior->siguiente_en_hoja = NULL;
+        }else{
+            p = anterior->siguiente_en_hoja;
+            q->valor = p->valor;
+
+            if(p->nodo){
+                q->nodo = p->nodo;
+            }
+            if(p->nodo_interno){
+                q->nodo_interno = p->nodo_interno;
+                nodo_interno = p->nodo_interno;
+                nodo_interno->sacar_de_nodo(p);
+                nodo_interno->agregar_en_nodo(q);
+            }
+            anterior->siguiente_en_hoja = p->siguiente_en_hoja;
+            anterior->siguiente_en_hoja->anterior_en_hoja = anterior;
+        }
+
+        /// PARA ACTUALIZAR LA MITAD DE LA HOJA
+        if(p->valor < mitad->valor)             /// MENOR QUE LA MITAD
+            menores--;
+        else if(mitad->valor < p->valor)        /// MAYOR QUE LA MITAD
+            mayores--;
+        else{                                   /// ES LA MITAD
+            if(mitad->siguiente_en_hoja){       /// EXISTE ELEMENTO SIGUIENTE A LA MITAD
+                mitad = mitad->siguiente_en_hoja;
+                mayores--;
+            }else if(mitad->anterior_en_hoja){
+                mitad = mitad->anterior_en_hoja;
+                menores--;
+            }else{                               /// LA MITAD ES/ERA EL UNICO ELEMENTO
+                mitad = NULL;
+                principio = NULL;
+            }
+            /**if(mayores != 0){                   /// HAY UN ELEMENTO ADEMAS DE LA MITAD
+                mayores--;
+            }else if(menores !=0 ){
+                menores--;
+            }else{                              /// MITAD ES EL UNICO ELEMENTO Y ES EL PRINCIPIO, REINICIAR PRINCIPIO DEL NODO
+                principio = NULL;
+            }**/
+        }
+
+        delete p;
+        if(mayores - menores > 1){
+            mitad = mitad->siguiente_en_hoja;
+            mayores--;
+            menores++;
+        }else if(menores - mayores > 1){
+            mitad = mitad->anterior_en_hoja;
+            menores--;
+            mayores++;
+        }
+        cuantos--;
+
+        return true;
+    }
+}
+
+///     **************************************************************************************************
 ///     SACAR DE NODO
+///     DADO UN VALOR SE DESCONECTA DE LOS ELEMENTOS EN EL NODO INTERNO Y SE RE POSICIONA LA MITAD DEL NODO
 ///     DESCRIPCION:
 ///     PARAMENTROS:
 ///     RETORNO:
 ///     **************************************************************************************************
 void Nodo::sacar_de_nodo(Valor * p){
+
     cuantos--;
+
     if(p->siguiente_en_nodo)
         p->siguiente_en_nodo->anterior_en_nodo = p->anterior_en_nodo;
-    if(p->anterior_en_nodo)
+    if(p->anterior_en_nodo){
         p->anterior_en_nodo->siguiente_en_nodo = p->siguiente_en_nodo;
+    }else{
+        if(p->siguiente_en_nodo)
+            principio = p->siguiente_en_nodo;
+        else principio = NULL;
+    }
 
-    if(p->valor < mitad->valor)             /// MENOR QUE LA MITAD
+    if(p->valor < mitad->valor){             /// MENOR QUE LA MITAD
         menores--;
-    else if(mitad->valor < p->valor)        /// MAYOR QUE LA MITAD
+    }else if(mitad->valor < p->valor)        /// MAYOR QUE LA MITAD
         mayores--;
     else{                                   /// ES LA MITAD
-        mitad = mitad->siguiente_en_nodo;
-        mayores--;
+        if(mitad->siguiente_en_nodo){       /// EXISTE ELEMENTO SIGUIENTE A LA MITAD
+            mitad = mitad->siguiente_en_nodo;
+            mayores--;
+        }else if(mitad->anterior_en_nodo){
+            mitad = mitad->anterior_en_nodo;
+            menores--;
+        }else{                               /// LA MITAD ES/ERA EL UNICO ELEMENTO
+            mitad = NULL;
+            principio = NULL;
+        }
     }
 
     p->siguiente_en_nodo = NULL;
     p->anterior_en_nodo = NULL;
 
-    /// NO HAY MITAD
     if(mayores - menores > 1){
         mitad = mitad->siguiente_en_nodo;
         mayores--;
@@ -488,6 +609,13 @@ Valor * Nodo::obtener_mitad(){
 }
 
 ///     **************************************************************************************************
+///     OBTENER EL NODO ANTERIOR EN LA BUSQUEDA
+///     **************************************************************************************************
+Valor * Nodo::obtener_anterior(){
+    return anterior;
+}
+
+///     **************************************************************************************************
 ///     OBTENER EL AUXILIAR DERECHO DE UN NODO / HOJA
 ///     **************************************************************************************************
 Nodo * Nodo::obtener_auxiliar_derecho(){
@@ -537,6 +665,19 @@ void Nodo::establecer_padre(Nodo * p){
 ///     **************************************************************************************************
 bool Nodo::nodo_es_hoja(){
     if(es_hoja)
+        return true;
+    else
+        return false;
+}
+
+///     **************************************************************************************************
+///     FUE ENCONTRADO
+///     DESCRIPCION:
+///     PARAMENTROS:
+///     RETORNO:
+///     **************************************************************************************************
+bool Nodo::fue_encontrado(){
+    if(encontrado)
         return true;
     else
         return false;

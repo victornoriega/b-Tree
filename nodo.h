@@ -31,24 +31,30 @@ public:
     void agregar_en_hoja(int);
     void agregar_en_nodo(Valor *);
     int sacar(int);
+    bool sacar_de_hoja(int);
     void sacar_de_nodo(Valor *);
 
     /// FUNCIONES UTILES
     Valor * obtener_lugar_agregado();
     Valor * obtener_principio();
     Valor * obtener_mitad();
+    Valor * obtener_anterior();
 
     Nodo * obtener_auxiliar_izquierdo();
     void establecer_auxiliar_izquierdo(Nodo *);
     Nodo * obtener_auxiliar_derecho();
     void establecer_auxiliar_derecho(Nodo *);
-
     Nodo * obtener_padre();
     void establecer_padre(Nodo *);
+    Nodo * obtener_nodo_interno();
+    void establecer_nodo_interno(Nodo *);
+
 
     int obtener_cuantos();
     int obtener_orden();
     bool nodo_es_hoja();
+
+    bool fue_encontrado();
 
     void pintar_hoja();
     void pintar_nodo();
