@@ -21,6 +21,14 @@ int main()
     A->sacar(140);
     A->sacar(350);
     A->sacar(370);
+    A->sacar(230);
+    A->sacar(230);
+    A->sacar(220);**/
+
+    A->pintar();
+    /**A->sacar(140);
+    A->sacar(350);
+    A->sacar(370);
     A->pintar();**/
     /**for(int i = 10 ; i <= 190 ; i+=10){
         A->agregar(i);

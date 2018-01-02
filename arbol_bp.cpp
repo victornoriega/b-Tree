@@ -124,7 +124,6 @@ void Arbol_BP::agregar(int a){
 ///     **************************************************************************************************
 bool Arbol_BP::sacar(int a){
     /// HOJA DONDE DEBERIA ESTAR EL VALOR
-
     Nodo * p = buscar_hoja(a);
     if(!p){
         return false;
@@ -585,7 +584,7 @@ void Arbol_BP::combinar(Nodo * p, Nodo * q, int a){
             /// *********************************************************************
         }
     /// LA HOJA HERMANA ES IZQUIERDA, COMBINAR DENTRO DE LA HOJA HERMANA
-    }else if(hoja_hermana == hoja_actual->obtener_auxiliar_derecho()){
+    }else if(hoja_hermana == hoja_actual->obtener_auxiliar_izquierdo()){
         Valor * auxiliar = hoja_actual->obtener_principio();
 
         nodo_interno = auxiliar->nodo_interno;
@@ -1079,7 +1078,7 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
         nodo_padre->agregar_en_nodo(valor_a_subir);
         /// **********************************************************************
         return true;
-    /// EL NODO TIENE HERMANO DERECHO PERO NO PUEDE PRESTAR NORMALMENTE     COMBINAR EN P
+    /// EL NODO TIENE HERMANO DERECHO PERO PUEDE PRESTAR NORMALMENTE     COMBINAR EN P
     }else if(p->obtener_hermano_derecho() && p->obtener_hermano_derecho()->obtener_cuantos() > orden/2 &&
        p->obtener_hermano_derecho()->obtener_padre() == p->obtener_padre()){
 
@@ -1181,10 +1180,13 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
                 auxiliar2->nodo_interno = nodo_hermano;
                 auxiliar2->nodo->establecer_padre(nodo_hermano);
             }
-            nodo_interno->terminar_nodo();
+            ///nodo_interno->terminar_nodo();
             return true;
         /// EL NODO PADRE NO PUEDE BAJAR NORMALMENTE
         }else if(nodo_padre != raiz){
+            cout << "Valor inicial dentro del nodo: " << nodo_interno->obtener_principio()->valor << endl;
+            cout << "Valor inicial dentro del padre: " << nodo_interno->obtener_padre()->obtener_principio()->valor << endl;
+            cout << "Valor que se va a bajar: " << valor_a_bajar->valor << endl;
             cout << "2" << endl;
             /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
             /// **********************************************************************
@@ -1204,6 +1206,7 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
             Valor * auxiliar = nodo_interno->obtener_principio();
             Valor * auxiliar2;
             Nodo * nodo_auxiliar;
+
             while(auxiliar){
                 auxiliar2 = auxiliar;
                 auxiliar = auxiliar->siguiente_en_nodo;
@@ -1219,7 +1222,8 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
                 auxiliar2->nodo_interno = nodo_hermano;
                 auxiliar2->nodo->establecer_padre(nodo_hermano);
             }
-            nodo_interno->terminar_nodo();
+            ///nodo_interno->terminar_nodo();
+
             return false;
         /// EL NODO PADRE ES LA RAIZ Y PUEDE TENER SUBFLUJO
         }else if(nodo_padre == raiz && nodo_padre->obtener_cuantos() > 1){
@@ -1257,7 +1261,7 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
                 auxiliar2->nodo_interno = nodo_hermano;
                 auxiliar2->nodo->establecer_padre(nodo_hermano);
             }
-            nodo_interno->terminar_nodo();
+            ///nodo_interno->terminar_nodo();
 
             return true;
         /// EL NODO PADRE ES LA RAIZ Y SE TIENE QUE COMBINAR DISMINUYENDO LA ALTURA
@@ -1299,7 +1303,7 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
                 auxiliar2->nodo_interno = nodo_hermano;
                 auxiliar2->nodo->establecer_padre(nodo_hermano);
             }
-            nodo_interno->terminar_nodo();
+            ///nodo_interno->terminar_nodo();
             nodo_padre->terminar_nodo();
             raiz = nodo_hermano;
             altura--;
