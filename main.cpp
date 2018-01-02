@@ -1,51 +1,50 @@
 #include <iostream>
-#include "arbol_bp.h"
-#include "funciones_extra.h"
+
 using namespace std;
 
-int main(){
+#include "arbol_bp.h"
+#include "funciones_extra.h"
+
+int main()
+{
     Arbol_BP * A = new Arbol_BP();
-    ///escribir_en_archivo();
-    ///tomar_valores_de_archivo(A);
+    /**tomar_valores_de_archivo(A);
+    sacar_valores_de_archivo(A);
+    A->pintar();**/
 
-    /**A->agregar(36);
-    A->agregar(92);
-    A->agregar(13);
-    A->agregar(21);
-    A->agregar(156);
-    A->agregar(2);
-    A->agregar(5);
-    A->agregar(49);
-    A->agregar(37);
-    A->agregar(76);
-    A->agregar(43);
-    A->agregar(62);
-    A->agregar(25);
-    A->agregar(87);
-    A->agregar(66);
-    A->agregar(99);
-    A->agregar(72);
-    A->agregar(74);
-    A->agregar(115);
-    A->agregar(75);
-    A->sacar(21);
-    A->sacar(13);**/
-
-    ///A->sacar(21);
-    ///A->agregar(87);
-    ///A->agregar(156);
-
-    /**for(int i = 0 ; i < 2500000 ; i++){
-        A->agregar(i);
-    }**/
-    for(int i = 20 ; i >= 1 ; i--){
+    for(int i = 10 ; i <= 560 ; i+=10){
         A->agregar(i);
     }
-    /**A->sacar(2);
-    A->sacar(4);
-    A->sacar(15);
-    A->sacar(16);
-    A->sacar(17);**/
+    A->sacar(190);
+    A->sacar(170);
     A->pintar();
+    /**for(int i = 10 ; i <= 190 ; i+=10){
+        A->agregar(i);
+    }**/
+    /**A->agregar(95);
+    A->sacar(70);
+    A->agregar(125);
+    A->agregar(135);**/
+
+    /**A->sacar(10);
+    A->sacar(130);
+    A->sacar(170);
+    A->sacar(180);
+    A->sacar(110);
+    A->sacar(20);
+    A->sacar(90);
+    A->sacar(150);
+    A->pintar();**/
+
+    /**for(int i = 10 ; i <= 100 ; i+=10){
+        A->agregar(i);
+    }
+    A->agregar(35);
+    A->agregar(45);
+    A->sacar(60);
+    A->sacar(70);
+    A->sacar(10);
+    A->sacar(20);
+    A->pintar();**/
     return 0;
 }

@@ -20,7 +20,7 @@ void escribir_en_archivo(){
 }
 
 void tomar_valores_de_archivo(Arbol_BP * A){
-    ifstream archivo("numeros_al_azar.txt");
+    ifstream archivo("valores.txt");
     int x;
     if(archivo.is_open()){
         while(true){
@@ -28,6 +28,19 @@ void tomar_valores_de_archivo(Arbol_BP * A){
             if(archivo.eof())
                 break;
             A->agregar(x);
+        }
+    }
+}
+
+void sacar_valores_de_archivo(Arbol_BP * A){
+    ifstream archivo("valores_sacar_copia.txt");
+    int x;
+    if(archivo.is_open()){
+        while(true){
+            archivo >> x;
+            if(archivo.eof())
+                break;
+            A->sacar(x);
         }
     }
 }

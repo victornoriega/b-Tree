@@ -15,6 +15,8 @@ class Nodo{
     int donde;
     bool es_hoja;
     bool encontrado;
+    Nodo * hermano_izquierdo;
+    Nodo * hermano_derecho;
     Nodo * padre;
     Nodo * auxiliar_derecho;
     Nodo * auxiliar_izquierdo;
@@ -26,11 +28,11 @@ public:
     void nueva_hoja(int ord = ORDEN_RECOMENDADO);   /// CONSTRUCTOR EN CODIGO PARA LAS HOJAS
     void terminar_hoja();   /// DESTRUCTOR EN CODIGO P/HOJAS - NODOS
     void nuevo_nodo(int ord = ORDEN_RECOMENDADO);   /// CONSTRUCTOR EN CODIGO PARA LOS NODOS
+    void terminar_nodo();
 
     void buscar(int);
     void agregar_en_hoja(int);
     void agregar_en_nodo(Valor *);
-    int sacar(int);
     bool sacar_de_hoja(int);
     void sacar_de_nodo(Valor *);
 
@@ -48,6 +50,11 @@ public:
     void establecer_padre(Nodo *);
     Nodo * obtener_nodo_interno();
     void establecer_nodo_interno(Nodo *);
+
+    Nodo * obtener_hermano_derecho();
+    void establecer_hermano_derecho(Nodo *);
+    Nodo * obtener_hermano_izquierdo();
+    void establecer_hermano_izquierdo(Nodo *);
 
 
     int obtener_cuantos();

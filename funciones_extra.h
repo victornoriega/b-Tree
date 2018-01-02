@@ -4,5 +4,6 @@
 #include "arbol_bp.h"
 void escribir_en_archivo();
 void tomar_valores_de_archivo(Arbol_BP *);
+void sacar_valores_de_archivo(Arbol_BP *);
 
 #endif // FUNCIONES_EXTRA_H_INCLUDED
