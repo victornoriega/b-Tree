@@ -179,10 +179,12 @@ bool Arbol_BP::sacar(int a){
 
             /// La HOJA ANTERIOR NO PUEDE PRESTARLE PERO PUEDEN COMBINARSE Y COMPARTEN PADRE
             }else if(p->obtener_auxiliar_izquierdo() && p->obtener_auxiliar_izquierdo()->obtener_padre() == p->obtener_padre()){
+                cout << "Se combina con la hoja izquierda" << endl;
                 combinar(p, p->obtener_auxiliar_izquierdo(), a);
 
             /// LA HOJA SIGUIENTE NO PUEDE PRESTARLE PERO PUEDEN COMBINARSE Y COMPARTEN PADRE
             }else if(p->obtener_auxiliar_derecho() && p->obtener_auxiliar_derecho()->obtener_padre() == p->obtener_padre()){
+                cout << "Se combina con la hoja derecha" << endl;
                 combinar(p, p->obtener_auxiliar_derecho(), a);
             }
         }
@@ -507,95 +509,92 @@ void Arbol_BP::dividir_hoja(Nodo * p, Nodo * q){
 void Arbol_BP::combinar(Nodo * p, Nodo * q, int a){
     /// P TIENE LA MINIMA CANTIDAD DE VALORES Y Q NO LE PUEDE PRESTAR
     /// SE TIENE QUE SACAR UN VALOR DE P
+
     Nodo * hoja_actual = p;
     Nodo * hoja_hermana = q;
+    Nodo * nodo_padre = hoja_actual->obtener_padre();
 
-    Nodo * nodo_padre = p->obtener_padre();
+    Valor * valor_a_sacar = hoja_actual->obtener_principio();
+    while(valor_a_sacar){
+        if(valor_a_sacar->valor == a)
+            break;
+        valor_a_sacar = valor_a_sacar->siguiente_en_hoja;
+    }
+    if(!valor_a_sacar)
+        return;
 
     Nodo * nodo_interno;
     Nodo * nodo;
-
-    /// TOMAR EL VALOR QUE SE SACARA DE P
-    Valor * auxiliar = hoja_actual->obtener_principio();
-    while(auxiliar){
-        if(auxiliar->valor == a)
-            break;
-        auxiliar = auxiliar->siguiente_en_hoja;
-    }
-    if(!auxiliar)
-        return;
-
-    /// LA HOJA HERMANA ES DERECHA      COMBINAR EN P
     if(hoja_hermana == hoja_actual->obtener_auxiliar_derecho()){
-        if(auxiliar->nodo_interno){
+        /// EL VALOR A SACAR TIENE REFERENCIAS A NODO INTERNO
+        if(valor_a_sacar->nodo_interno){
+
+            Valor * auxiliar = hoja_hermana->obtener_principio();
+            nodo_interno = auxiliar->nodo_interno;
+            nodo = auxiliar->nodo;
+
+            auxiliar->nodo_interno = NULL;
+            auxiliar->nodo = NULL;
+            nodo_interno->sacar_de_nodo(auxiliar);
             /// METER LOS VALORES DE LA HOJA HERMANA EN LA HOJA ACTUAL
             /// *********************************************************************
-            nodo_interno = hoja_hermana->obtener_principio()->nodo_interno;
-            nodo = hoja_hermana->obtener_principio()->nodo;
-
-            hoja_hermana->obtener_principio()->nodo_interno = NULL;
-            hoja_hermana->obtener_principio()->nodo = NULL;
-
-            nodo_interno->sacar_de_nodo(hoja_hermana->obtener_principio());
-
-            Valor * copia = hoja_hermana->obtener_principio();
-            while(copia){
-                hoja_actual->agregar_en_hoja(copia->valor);
-                copia = copia->siguiente_en_hoja;
+            while(auxiliar){
+                hoja_actual->agregar_en_hoja(auxiliar->valor);
+                auxiliar = auxiliar->siguiente_en_hoja;
             }
             hoja_hermana->terminar_hoja();
             /// *********************************************************************
 
             /// ACTUALIZAR LA HOJA Y SACAR EL VALOR
             /// *********************************************************************
-            nodo_interno = auxiliar->nodo_interno;
-            nodo = auxiliar->nodo;
+            nodo_interno = valor_a_sacar->nodo_interno;
+            nodo = valor_a_sacar->nodo;
 
-            auxiliar->nodo_interno = NULL;
-            auxiliar->nodo = NULL;
+            valor_a_sacar->nodo_interno = NULL;
+            valor_a_sacar->nodo = NULL;
+            nodo_interno->sacar_de_nodo(valor_a_sacar);
 
-            nodo_interno->sacar_de_nodo(auxiliar);
-            auxiliar->siguiente_en_hoja->nodo_interno = nodo_interno;
-            auxiliar->siguiente_en_hoja->nodo = nodo;
-            nodo_interno->agregar_en_nodo(auxiliar->siguiente_en_hoja);
+            valor_a_sacar->siguiente_en_hoja->nodo_interno = nodo_interno;
+            valor_a_sacar->siguiente_en_hoja->nodo = nodo;
 
-            hoja_actual->sacar_de_hoja(auxiliar->valor);
+            nodo_interno->agregar_en_nodo(valor_a_sacar->siguiente_en_hoja);
+            hoja_actual->sacar_de_hoja(valor_a_sacar->valor);
             /// *********************************************************************
 
+        /// EL VALOR A SACAR NO TIENE REFERENCIA A NODO INTERNO
         }else{
             /// METER LOS VALORES DE LA HOJA HERMANA EN LA HOJA ACTUAL
             /// *********************************************************************
             nodo_interno = hoja_hermana->obtener_principio()->nodo_interno;
             nodo = hoja_hermana->obtener_principio()->nodo;
 
-            hoja_hermana->obtener_principio()->nodo_interno = NULL;
-            hoja_hermana->obtener_principio()->nodo = NULL;
+            Valor * auxiliar = hoja_hermana->obtener_principio();
+            auxiliar->nodo_interno = NULL;
+            auxiliar->nodo = NULL;
 
-            nodo_interno->sacar_de_nodo(hoja_hermana->obtener_principio());
-
-            Valor * copia = hoja_hermana->obtener_principio();
-            while(copia){
-                hoja_actual->agregar_en_hoja(copia->valor);
-                copia = copia->siguiente_en_hoja;
-            }
-            hoja_hermana->terminar_hoja();
+            nodo_interno->sacar_de_nodo(auxiliar);
 
             /// SACAR EL VALOR
             /// *********************************************************************
-            hoja_actual->sacar_de_hoja(auxiliar->valor);
+            hoja_actual->sacar_de_hoja(a);
+            while(auxiliar){
+                hoja_actual->agregar_en_hoja(auxiliar->valor);
+                auxiliar = auxiliar->siguiente_en_hoja;
+            }
+            hoja_hermana->terminar_hoja();
             /// *********************************************************************
         }
-    /// LA HOJA HERMANA ES IZQUIERDA    COMBINAR EN Q
-    }else if(hoja_hermana == hoja_actual->obtener_auxiliar_izquierdo()){
-        /// METER LOS VALORES DE LA HOJA ACTUAL EN LA HOJA HERMANA
-        /// *********************************************************************
-        nodo_interno = hoja_actual->obtener_principio()->nodo_interno;
-        nodo = hoja_actual->obtener_principio()->nodo;
+    /// LA HOJA HERMANA ES IZQUIERDA, COMBINAR DENTRO DE LA HOJA HERMANA
+    }else if(hoja_hermana == hoja_actual->obtener_auxiliar_derecho()){
+        Valor * auxiliar = hoja_actual->obtener_principio();
 
-        hoja_actual->obtener_principio()->nodo_interno = NULL;
-        hoja_actual->obtener_principio()->nodo = NULL;
+        nodo_interno = auxiliar->nodo_interno;
+        nodo = auxiliar->nodo;
 
-        nodo_interno->sacar_de_nodo(hoja_actual->obtener_principio());
+        auxiliar->nodo_interno = NULL;
+        auxiliar->nodo = NULL;
+
+        nodo_interno->sacar_de_nodo(auxiliar);
 
         hoja_actual->sacar_de_hoja(auxiliar->valor);
 
@@ -1026,6 +1025,471 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
     Valor * valor_a_subir;
     Valor * valor_a_bajar;
 
+
+    /// EL NODO TIENE HERMANO IZQUIERDO Y PUEDE PRESTARLE
+    if(p->obtener_hermano_izquierdo() && p->obtener_hermano_izquierdo()->obtener_cuantos() > orden/2 &&
+        p->obtener_hermano_izquierdo()->obtener_padre() == p->obtener_padre()){
+
+        cout << "Tiene hermano izquierdo y puede prestarle" << endl;
+
+        nodo_hermano = nodo_interno->obtener_hermano_izquierdo();
+        /// OBTENER EL VALOR QUE SE BAJARA
+        /// **********************************************************************
+        valor_a_bajar = nodo_padre->obtener_principio();
+        while(valor_a_bajar){
+            if(valor_a_bajar->nodo == nodo_interno)
+                break;
+            valor_a_bajar = valor_a_bajar->siguiente_en_nodo;
+        }
+        /// **********************************************************************
+
+        /// OBTENER EL VALOR QUE SE VA A SUBIR
+        /// **********************************************************************
+        valor_a_subir = nodo_hermano->obtener_principio();
+        while(true){
+            if(!valor_a_subir->siguiente_en_nodo)
+                break;
+            valor_a_subir = valor_a_subir->siguiente_en_nodo;
+        }
+        /// **********************************************************************
+        /// ACTUALIZAR PUNTEROS VALOR A BAJAR
+        /// **********************************************************************
+        valor_a_bajar->nodo = NULL;
+        valor_a_bajar->nodo_interno = NULL;
+        nodo_padre->sacar_de_nodo(valor_a_bajar);
+
+        valor_a_bajar->nodo_interno = nodo_interno;
+        valor_a_bajar->nodo = nodo_interno->obtener_auxiliar_izquierdo();
+
+        nodo_interno->establecer_auxiliar_izquierdo(valor_a_subir->nodo);
+        nodo_interno->obtener_auxiliar_izquierdo()->establecer_padre(nodo_interno);
+        nodo_interno->agregar_en_nodo(valor_a_bajar);
+        /// **********************************************************************
+
+        /// ACTUALIZAR PUNTEROS VALOR A SUBIR
+        /// **********************************************************************
+        valor_a_subir->nodo = NULL;
+        valor_a_subir->nodo_interno = NULL;
+
+        nodo_hermano->sacar_de_nodo(valor_a_subir);
+
+        valor_a_subir->nodo_interno = nodo_padre;
+        valor_a_subir->nodo = nodo_interno;
+
+        nodo_padre->agregar_en_nodo(valor_a_subir);
+        /// **********************************************************************
+        return true;
+    /// EL NODO TIENE HERMANO DERECHO PERO NO PUEDE PRESTAR NORMALMENTE     COMBINAR EN P
+    }else if(p->obtener_hermano_derecho() && p->obtener_hermano_derecho()->obtener_cuantos() > orden/2 &&
+       p->obtener_hermano_derecho()->obtener_padre() == p->obtener_padre()){
+
+        cout << "Tiene hermano derecho y puede prestarle" << endl;
+
+        nodo_hermano = nodo_interno->obtener_hermano_derecho();
+        /// OBTENER EL VALOR QUE SE BAJARA
+        /// **********************************************************************
+        valor_a_bajar = p->obtener_padre()->obtener_principio();
+        while(valor_a_bajar){
+            if(valor_a_bajar->nodo == nodo_hermano)
+                break;
+            valor_a_bajar = valor_a_bajar->siguiente_en_nodo;
+        }
+        /// **********************************************************************
+
+        /// OBTENER EL VALOR QUE SE SUBIRA
+        /// **********************************************************************
+        valor_a_subir = nodo_hermano->obtener_principio();
+        /// **********************************************************************
+
+        /// ACTUALIZAR PUNTEROS VALOR A BAJAR
+        /// **********************************************************************
+        valor_a_bajar->nodo = NULL;
+        valor_a_bajar->nodo_interno = NULL;
+
+        nodo_interno->obtener_padre()->sacar_de_nodo(valor_a_bajar);
+
+        valor_a_bajar->nodo_interno = nodo_interno;
+        valor_a_bajar->nodo = nodo_hermano->obtener_auxiliar_izquierdo();
+        valor_a_bajar->nodo->establecer_padre(nodo_interno);
+        nodo_interno->agregar_en_nodo(valor_a_bajar);
+        /// **********************************************************************
+
+        /// ACTUALIZAR PUNTEROS VALOR A SUBIR
+        /// **********************************************************************
+        nodo_hermano->establecer_auxiliar_izquierdo(valor_a_subir->nodo);
+
+        valor_a_subir->nodo = NULL;
+        valor_a_subir->nodo_interno = NULL;
+
+        nodo_hermano->sacar_de_nodo(valor_a_subir);
+
+        valor_a_subir->nodo_interno = nodo_interno->obtener_padre();
+        valor_a_subir->nodo = nodo_hermano;
+        nodo_interno->obtener_padre()->agregar_en_nodo(valor_a_subir);
+        /// **********************************************************************
+
+        return true;
+    /// EL NODO TIENE HERMANO IZQUIERDO PERO NO PUEDE PRESTAR NORMALMENTE       COMBINAR EN Q
+    }else if(p->obtener_hermano_izquierdo() && p->obtener_hermano_izquierdo()->obtener_padre() == p->obtener_padre()){
+
+        cout << "Tiene hermano izquierdo pero no puede prestarle normalmente................................" << endl;
+
+        nodo_hermano = nodo_interno->obtener_hermano_izquierdo();
+        /// OBTENER EL VALOR QUE SE BAJARA
+        /// **********************************************************************
+        valor_a_bajar = nodo_padre->obtener_principio();
+        while(valor_a_bajar){
+            if(valor_a_bajar->nodo == nodo_interno)
+                break;
+            valor_a_bajar = valor_a_bajar->siguiente_en_nodo;
+        }
+        /// **********************************************************************
+
+        /// EL NODO PADRE PUEDE BAJAR UN VALOR
+        if(nodo_padre != raiz && nodo_padre->obtener_cuantos() > orden/2){
+            cout << "1" << endl;
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_hermano->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_hermano;
+            valor_a_bajar->nodo = nodo_interno->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_hermano);
+
+            /// COPIAR EL NODO INTERNO EN EL NODO HERMANO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_interno->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_interno->sacar_de_nodo(auxiliar2);
+                nodo_hermano->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_hermano;
+                auxiliar2->nodo->establecer_padre(nodo_hermano);
+            }
+            nodo_interno->terminar_nodo();
+            return true;
+        /// EL NODO PADRE NO PUEDE BAJAR NORMALMENTE
+        }else if(nodo_padre != raiz){
+            cout << "2" << endl;
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_hermano->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_hermano;
+            valor_a_bajar->nodo = nodo_interno->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_hermano);
+
+            /// COPIAR EL NODO INTERNO EN EL NODO HERMANO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_interno->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_interno->sacar_de_nodo(auxiliar2);
+                nodo_hermano->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_hermano;
+                auxiliar2->nodo->establecer_padre(nodo_hermano);
+            }
+            nodo_interno->terminar_nodo();
+            return false;
+        /// EL NODO PADRE ES LA RAIZ Y PUEDE TENER SUBFLUJO
+        }else if(nodo_padre == raiz && nodo_padre->obtener_cuantos() > 1){
+            cout << "3" << endl;
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_hermano->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_hermano;
+            valor_a_bajar->nodo = nodo_interno->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_hermano);
+
+            /// COPIAR EL NODO INTERNO EN EL NODO HERMANO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_interno->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_interno->sacar_de_nodo(auxiliar2);
+                nodo_hermano->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_hermano;
+                auxiliar2->nodo->establecer_padre(nodo_hermano);
+            }
+            nodo_interno->terminar_nodo();
+
+            return true;
+        /// EL NODO PADRE ES LA RAIZ Y SE TIENE QUE COMBINAR DISMINUYENDO LA ALTURA
+        }else if(nodo_padre == raiz && nodo_padre->obtener_cuantos() == 1){
+            cout << "4" << endl;
+            nodo_hermano->establecer_padre(NULL);
+            nodo_interno->establecer_padre(NULL);
+
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_hermano->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_hermano;
+            valor_a_bajar->nodo = nodo_interno->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_hermano);
+
+            /// COPIAR EL NODO INTERNO EN EL NODO HERMANO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_interno->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_interno->sacar_de_nodo(auxiliar2);
+                nodo_hermano->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_hermano;
+                auxiliar2->nodo->establecer_padre(nodo_hermano);
+            }
+            nodo_interno->terminar_nodo();
+            nodo_padre->terminar_nodo();
+            raiz = nodo_hermano;
+            altura--;
+            return true;
+        }
+    /// EL NODO TIENE HERMANO DERECHO PERO NO PUEDE PRESTAR NORMALMENTE     COMBINAR EN P
+    }else if(p->obtener_hermano_derecho() && p->obtener_hermano_derecho()->obtener_padre() == p->obtener_padre()){
+        cout << "Tiene hermano derecho pero no puede prestarle directamente" << endl;
+
+        nodo_hermano = nodo_interno->obtener_hermano_derecho();
+
+        /// OBTENER EL VALOR QUE SE BAJARA
+        /// **********************************************************************
+        valor_a_bajar = nodo_padre->obtener_principio();
+        while(valor_a_bajar){
+            if(valor_a_bajar->nodo == nodo_hermano)
+                break;
+            valor_a_bajar = valor_a_bajar->siguiente_en_nodo;
+        }
+        /// **********************************************************************
+
+        /// EL NODO PADRE PUEDE BAJAR UN VALOR
+        if(nodo_padre != raiz && nodo_padre->obtener_cuantos() > orden/2){
+
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_interno->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_interno;
+            valor_a_bajar->nodo = nodo_hermano->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_interno);
+
+            /// COPIAR EL NODO HERMANO EN EL NODO INTERNO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_hermano->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_hermano->sacar_de_nodo(auxiliar2);
+                nodo_interno->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_interno;
+                auxiliar2->nodo->establecer_padre(nodo_interno);
+            }
+            nodo_hermano->terminar_nodo();
+
+            return true;
+        /// EL NODO PADRE NO PUEDE BAJAR NORMALMENTE
+        }else if(nodo_padre != raiz){
+
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_interno->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_interno;
+            valor_a_bajar->nodo = nodo_hermano->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_interno);
+
+            /// COPIAR EL NODO HERMANO EN EL NODO INTERNO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_hermano->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_hermano->sacar_de_nodo(auxiliar2);
+                nodo_interno->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_interno;
+                auxiliar2->nodo->establecer_padre(nodo_interno);
+            }
+            nodo_hermano->terminar_nodo();
+
+            return false;
+        /// EL NODO PADRE ES LA RAIZ Y PUEDE TENER SUBFLUJO
+        }else if(nodo_padre == raiz && nodo_padre->obtener_cuantos() > 1){
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_interno->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_interno;
+            valor_a_bajar->nodo = nodo_hermano->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_interno);
+
+            /// COPIAR EL NODO HERMANO EN EL NODO INTERNO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_hermano->obtener_principio();
+            Valor * auxiliar2;
+            ///
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                ///
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_hermano->sacar_de_nodo(auxiliar2);
+                nodo_interno->agregar_en_nodo(auxiliar2);
+
+                ///
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_interno;
+                auxiliar2->nodo->establecer_padre(nodo_interno);
+            }
+            nodo_hermano->terminar_nodo();
+
+            return true;
+        /// EL NODO PADRE ES LA RAIZ Y SE TIENE QUE COMBINAR DISMINUYENDO LA ALTURA
+        }else if(nodo_padre == raiz && nodo_padre->obtener_cuantos() == 1){
+
+            nodo_hermano->establecer_padre(NULL);
+            nodo_interno->establecer_padre(NULL);
+
+            /// ACTUALIZANDO PUNTEROS DEL VALOR A BAJAR
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = NULL;
+            valor_a_bajar->nodo = NULL;
+            nodo_padre->sacar_de_nodo(valor_a_bajar);
+            nodo_interno->agregar_en_nodo(valor_a_bajar);
+
+            /// SACAR EL VALOR A BAJAR Y METERLO EN EL NUEVO NODO
+            /// **********************************************************************
+            valor_a_bajar->nodo_interno = nodo_interno;
+            valor_a_bajar->nodo = nodo_hermano->obtener_auxiliar_izquierdo();
+            valor_a_bajar->nodo->establecer_padre(nodo_interno);
+
+            /// COPIAR EL NODO HERMANO EN EL NODO INTERNO
+            /// **********************************************************************
+            Valor * auxiliar = nodo_hermano->obtener_principio();
+            Valor * auxiliar2;
+            Nodo * nodo_auxiliar;
+            while(auxiliar){
+                auxiliar2 = auxiliar;
+                auxiliar = auxiliar->siguiente_en_nodo;
+
+                nodo_auxiliar = auxiliar2->nodo;
+                auxiliar2->nodo = NULL;
+                auxiliar2->nodo_interno = NULL;
+
+                nodo_hermano->sacar_de_nodo(auxiliar2);
+                nodo_interno->agregar_en_nodo(auxiliar2);
+
+                auxiliar2->nodo = nodo_auxiliar;
+                auxiliar2->nodo_interno = nodo_interno;
+                auxiliar2->nodo->establecer_padre(nodo_interno);
+
+            }
+            nodo_hermano->terminar_nodo();
+            nodo_padre->terminar_nodo();
+            raiz = nodo_interno;
+            altura--;
+            return true;
+        }
+    }
+
+
+    /**
     /// EL NODO TIENE HERMANO DERECHO Y PUEDE PRESTARLE
     if(p->obtener_hermano_derecho() && p->obtener_hermano_derecho()->obtener_cuantos() > orden/2 &&
        p->obtener_hermano_derecho()->obtener_padre() == p->obtener_padre()){
@@ -1487,7 +1951,7 @@ bool Arbol_BP::combinar_nodos_internos(Nodo * p){
             altura--;
             return true;
         }
-    }
+    }**/
     return true;
 }
 ///     **************************************************************************************************
