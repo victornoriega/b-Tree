@@ -10,53 +10,11 @@ int main()
     Arbol_BP * A = new Arbol_BP();
     tomar_valores_de_archivo(A);
     sacar_valores_de_archivo(A);
-    A->pintar();
-
-    /**for(int i = 10 ; i <= 560 ; i+=10){
-        A->agregar(i);
-    }
-    A->sacar(190);
-    A->sacar(170);
-    A->sacar(130);
-    A->sacar(140);
-    A->sacar(350);
-    A->sacar(370);
-    A->sacar(230);
-    A->sacar(230);
-    A->sacar(220);**/
-
-    A->pintar();
-    /**A->sacar(140);
-    A->sacar(350);
-    A->sacar(370);
-    A->pintar();**/
-    /**for(int i = 10 ; i <= 190 ; i+=10){
+    /**for(int i = 10 ; i <= 1090 ; i+=10){
         A->agregar(i);
     }**/
-    /**A->agregar(95);
-    A->sacar(70);
-    A->agregar(125);
-    A->agregar(135);**/
 
-    /**A->sacar(10);
-    A->sacar(130);
-    A->sacar(170);
-    A->sacar(180);
-    A->sacar(110);
-    A->sacar(20);
-    A->sacar(90);
-    A->sacar(150);
-    A->pintar();**/
+    A->pintar();
 
-    /**for(int i = 10 ; i <= 100 ; i+=10){
-        A->agregar(i);
-    }
-    A->agregar(35);
-    A->agregar(45);
-    A->sacar(60);
-    A->sacar(70);
-    A->sacar(10);
-    A->sacar(20);
-    A->pintar();**/
     return 0;
 }

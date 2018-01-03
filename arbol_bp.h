@@ -1,7 +1,6 @@
 #ifndef ARBOL_BP_H_INCLUDED
 #define ARBOL_BP_H_INCLUDED
 
-
 #include "nodo.h"
 #define ORDEN_RECOMENDADO 5
 class Arbol_BP{
@@ -25,7 +24,7 @@ public:
     void empujar_izquierdo(Nodo *, Nodo *, int);
     void empujar_derecho(Nodo *, Nodo *, int);
     void combinar(Nodo *, Nodo *, int);
-    bool combinar_nodos_internos(Nodo *);
+    bool combinar_nodos_internos(Nodo *, int);
     bool bajar(Nodo *, Nodo *, Nodo *);
     void imprimir_nodos_internos(Nodo *);
 };

@@ -13,5 +13,4 @@ struct Valor{
     Nodo * nodo_interno;        /// REFERENCIA AL NODO INTERNO EN EL QUE SE ENCUENTRA EL VALOR
 };
 
-
 #endif // VALOR_H_INCLUDED
